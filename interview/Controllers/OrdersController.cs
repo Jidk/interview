@@ -22,7 +22,7 @@ namespace interview.Controllers
         // GET: Orders
         public async Task<IActionResult> Index()
         {
-            var northwindContext = _context.Orders.Include(o => o.Customer).Include(o => o.Employee).Include(o => o.ShipViaNavigation);
+            var northwindContext = _context.Orders;
             return View(await northwindContext.ToListAsync());
         }
 
@@ -35,9 +35,6 @@ namespace interview.Controllers
             }
 
             var order = await _context.Orders
-                .Include(o => o.Customer)
-                .Include(o => o.Employee)
-                .Include(o => o.ShipViaNavigation)
                 .FirstOrDefaultAsync(m => m.OrderId == id);
             if (order == null)
             {
@@ -141,9 +138,6 @@ namespace interview.Controllers
             }
 
             var order = await _context.Orders
-                .Include(o => o.Customer)
-                .Include(o => o.Employee)
-                .Include(o => o.ShipViaNavigation)
                 .FirstOrDefaultAsync(m => m.OrderId == id);
             if (order == null)
             {
