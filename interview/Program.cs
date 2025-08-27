@@ -26,7 +26,18 @@ builder.Services.AddDbContext<NorthwindContext>((serviceProvider, options) =>
 // 註冊OrderService
 builder.Services.AddScoped<IOrderService, OrderService>();
 
+// 加入swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
+
+// 開發環境使用swagger UI介面
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
