@@ -36,6 +36,11 @@ namespace interview.ApiControllers
         {
             var order = await _orderService.GetByIdAsync(id);
 
+            if (order == null)
+            {
+                return NotFound();
+            }
+
             return Ok(order);
         }
 
