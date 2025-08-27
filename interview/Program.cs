@@ -1,7 +1,25 @@
+using interview.Models;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// 註冊 DbContext
+builder.Services.AddDbContext<NorthwindContext>((serviceProvider, options) =>
+{
+    var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+    var connectionString = configuration.GetConnectionString("DbConnectonString");
+
+    options.UseSqlServer(connectionString, sqlOptions =>
+    {
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5, //重連次數
+            maxRetryDelay: TimeSpan.FromSeconds(30), //重連最大時間
+            errorNumbersToAdd: null); //錯誤處理編號
+    });
+});
 
 var app = builder.Build();
 
