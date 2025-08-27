@@ -20,3 +20,9 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.break-numbers {
+    word-wrap: break-word;
+    word-break: break-all; /* 強制所有字符換行 */
+    white-space: normal;
+}
