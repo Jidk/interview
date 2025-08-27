@@ -1,4 +1,6 @@
 using interview.Models;
+using interview.Services.Implementations;
+using interview.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +22,9 @@ builder.Services.AddDbContext<NorthwindContext>((serviceProvider, options) =>
             errorNumbersToAdd: null); //¿ù»~³B²z½s¸¹
     });
 });
+
+// µù¥UOrderService
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 var app = builder.Build();
 
