@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using interview.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace interview.Models;
+namespace interview.Data;
 
 public partial class NorthwindContext : DbContext
 {

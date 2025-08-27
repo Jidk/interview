@@ -1,4 +1,4 @@
-using interview.Models;
+using interview.Data;
 using interview.Services.Implementations;
 using interview.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
