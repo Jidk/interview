@@ -15,15 +15,45 @@ public partial class NorthwindContext : DbContext
     {
     }
 
+    public virtual DbSet<Customer> Customers { get; set; }
+
     public virtual DbSet<Employee> Employees { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
+
+    public virtual DbSet<Shipper> Shippers { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Customer>(entity =>
+        {
+            entity.HasIndex(e => e.City, "City");
+
+            entity.HasIndex(e => e.CompanyName, "CompanyName");
+
+            entity.HasIndex(e => e.PostalCode, "PostalCode");
+
+            entity.HasIndex(e => e.Region, "Region");
+
+            entity.Property(e => e.CustomerId)
+                .HasMaxLength(5)
+                .IsFixedLength()
+                .HasColumnName("CustomerID");
+            entity.Property(e => e.Address).HasMaxLength(60);
+            entity.Property(e => e.City).HasMaxLength(15);
+            entity.Property(e => e.CompanyName).HasMaxLength(40);
+            entity.Property(e => e.ContactName).HasMaxLength(30);
+            entity.Property(e => e.ContactTitle).HasMaxLength(30);
+            entity.Property(e => e.Country).HasMaxLength(15);
+            entity.Property(e => e.Fax).HasMaxLength(24);
+            entity.Property(e => e.Phone).HasMaxLength(24);
+            entity.Property(e => e.PostalCode).HasMaxLength(10);
+            entity.Property(e => e.Region).HasMaxLength(15);
+        });
+
         modelBuilder.Entity<Employee>(entity =>
         {
             entity.HasIndex(e => e.LastName, "LastName");
@@ -90,9 +120,24 @@ public partial class NorthwindContext : DbContext
             entity.Property(e => e.ShipRegion).HasMaxLength(15);
             entity.Property(e => e.ShippedDate).HasColumnType("datetime");
 
+            entity.HasOne(d => d.Customer).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.CustomerId)
+                .HasConstraintName("FK_Orders_Customers");
+
             entity.HasOne(d => d.Employee).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.EmployeeId)
                 .HasConstraintName("FK_Orders_Employees");
+
+            entity.HasOne(d => d.ShipViaNavigation).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.ShipVia)
+                .HasConstraintName("FK_Orders_Shippers");
+        });
+
+        modelBuilder.Entity<Shipper>(entity =>
+        {
+            entity.Property(e => e.ShipperId).HasColumnName("ShipperID");
+            entity.Property(e => e.CompanyName).HasMaxLength(40);
+            entity.Property(e => e.Phone).HasMaxLength(24);
         });
 
         OnModelCreatingPartial(modelBuilder);
