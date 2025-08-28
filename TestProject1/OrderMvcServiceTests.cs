@@ -20,6 +20,7 @@ namespace interview.Tests.Services
             // 初始化測試必要資料
             if (!context.Customers.Any())
             {
+                context.Orders.Add(new Order { OrderId = 1, EmployeeId = 1, ShipVia = 1, CustomerId = "ALFKI" });
                 context.Customers.Add(new Customer { CustomerId = "ALFKI", CompanyName = "Alfreds Futterkiste" });
                 context.Employees.Add(new Employee { EmployeeId = 1, FirstName = "Janet", LastName = "Fuller" });
                 context.Shippers.Add(new Shipper { ShipperId = 1, CompanyName = "Speedy Express" });
@@ -29,32 +30,21 @@ namespace interview.Tests.Services
             return context;
         }
 
-        [Fact]
-        public async Task CreateAsync_Should_Add_Order()
+            [Fact]
+        public async Task GetAllAsync_Should_Return_All_Orders()
         {
-            // Arrange
-            var context = GetInMemoryDbContext(nameof(CreateAsync_Should_Add_Order));
+            var context = GetInMemoryDbContext(nameof(GetAllAsync_Should_Return_All_Orders));
+            context.Orders.AddRange(
+                new Order { OrderId = 1, CustomerId = "ALFKI", EmployeeId = 1, OrderDate = DateTime.UtcNow },
+                new Order { OrderId = 2, CustomerId = "BLAUS", EmployeeId = 2, OrderDate = DateTime.UtcNow }
+            );
+            await context.SaveChangesAsync();
+
             var service = new OrderMvcService(context);
 
-            var vm = new OrderViewModel
-            {
-                CustomerId = "ALFKI",
-                EmployeeId = 1,
-                OrderDate = DateTime.UtcNow,
-                ShipCity = "Berlin",
-                ShipCountry = "Germany",
-                ShipVia = 1
-            };
+            var orders = await service.GetAllAsync();
 
-            // Act
-            var result = await service.CreateAsync(vm);
-
-            // Assert
-            Assert.True(result);
-            Assert.Equal(1, context.Orders.Count());
-            var order = context.Orders.First();
-            Assert.Equal("ALFKI", order.CustomerId);
-            Assert.Equal("Berlin", order.ShipCity);
+            Assert.Equal(2, orders.Count());
         }
 
         [Fact]
@@ -77,6 +67,63 @@ namespace interview.Tests.Services
 
             Assert.NotNull(orderVm);
             Assert.Equal("ALFKI", orderVm.CustomerId);
+        }
+
+        [Fact]
+        public async Task GetForEditAsync_Should_Return_Order_With_Dropdowns()
+        {
+            var context = GetInMemoryDbContext(nameof(GetForEditAsync_Should_Return_Order_With_Dropdowns));
+
+            var service = new OrderMvcService(context);
+
+            var vm = await service.GetForEditAsync(1);
+
+            Assert.NotNull(vm);
+            Assert.Equal("ALFKI", vm.CustomerId);
+            Assert.NotNull(vm.Customers);
+            Assert.NotNull(vm.Employees);
+            Assert.NotNull(vm.Shippers);
+        }
+
+        [Fact]
+        public async Task BuildCreateModelAsync_Should_Return_Empty_Model_With_Dropdowns()
+        {
+            var context = GetInMemoryDbContext(nameof(BuildCreateModelAsync_Should_Return_Empty_Model_With_Dropdowns));
+
+            var service = new OrderMvcService(context);
+
+            var vm = await service.BuildCreateModelAsync();
+
+            Assert.NotNull(vm);
+            Assert.Null(vm.CustomerId); // 尚未填值
+            Assert.NotNull(vm.Customers);
+            Assert.NotNull(vm.Employees);
+            Assert.NotNull(vm.Shippers);
+        }
+
+        [Fact]
+        public async Task CreateAsync_Should_Add_Order()
+        {
+            var context = GetInMemoryDbContext(nameof(CreateAsync_Should_Add_Order));
+            var service = new OrderMvcService(context);
+
+            var vm = new OrderViewModel
+            {
+                CustomerId = "ALFKI",
+                EmployeeId = 1,
+                OrderDate = DateTime.UtcNow,
+                ShipCity = "Berlin",
+                ShipCountry = "Germany",
+                ShipVia = 1
+            };
+
+            var result = await service.CreateAsync(vm);
+
+            Assert.True(result);
+            Assert.Equal(1, context.Orders.Count());
+            var order = context.Orders.First();
+            Assert.Equal("ALFKI", order.CustomerId);
+            Assert.Equal("Berlin", order.ShipCity);
         }
 
         [Fact]
