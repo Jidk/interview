@@ -1,4 +1,5 @@
-﻿using interview.Models;
+﻿using interview.DTOs;
+using interview.Models;
 using interview.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,7 @@ namespace interview.ApiControllers
 
         // GET: api/Orders
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+        public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrders()
         {
             var orders = await _orderService.GetAllAsync();
 
@@ -32,7 +33,7 @@ namespace interview.ApiControllers
 
         // GET: api/Orders/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> GetOrder(int id)
+        public async Task<ActionResult<OrderDto>> GetOrder(int id)
         {
             var order = await _orderService.GetByIdAsync(id);
 
@@ -47,7 +48,7 @@ namespace interview.ApiControllers
         // PUT: api/Orders/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder(int id, Order order)
+        public async Task<IActionResult> PutOrder(int id, OrderDto order)
         {
             await _orderService.UpdateAsync(id, order);
 
@@ -57,7 +58,7 @@ namespace interview.ApiControllers
         // POST: api/Orders
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Order>> PostOrder(Order order)
+        public async Task<ActionResult<OrderDto>> PostOrder(CreateOrderDto order)
         {
             var created = await _orderService.CreateAsync(order);
 
