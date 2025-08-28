@@ -59,7 +59,7 @@ namespace interview.ApiControllers
         [HttpPost]
         public async Task<ActionResult<Order>> PostOrder(Order order)
         {
-            var created = await _orderService.AddAsync(order);
+            var created = await _orderService.CreateAsync(order);
 
             return CreatedAtAction("GetOrder", new { id = created.OrderId }, created);
         }

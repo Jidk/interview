@@ -1,4 +1,5 @@
 using interview.Data;
+using interview.Data.Repositories;
 using interview.Services.Implementations;
 using interview.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -23,11 +24,11 @@ builder.Services.AddDbContext<NorthwindContext>((serviceProvider, options) =>
     });
 });
 
-// µù¥UOrderApiService
 builder.Services.AddScoped<IOrderApiService, OrderApiService>();
-
-// µù¥UOrderMvcService
 builder.Services.AddScoped<IOrderMvcService, OrderMvcService>();
+
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<ILookupRepository, LookupRepository>();
 
 // ¥[¤Jswagger
 builder.Services.AddEndpointsApiExplorer();

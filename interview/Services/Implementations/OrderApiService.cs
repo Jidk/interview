@@ -1,4 +1,5 @@
 ﻿using interview.Data;
+using interview.Data.Repositories;
 using interview.Models;
 using interview.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -7,63 +8,37 @@ namespace interview.Services.Implementations
 {
     public class OrderApiService : IOrderApiService
     {
-        private readonly NorthwindContext _context;
+        private readonly IOrderRepository _orderRepository;
 
-        public OrderApiService(NorthwindContext context)
+        public OrderApiService(IOrderRepository orderRepository)
         {
-            _context = context;
+            _orderRepository = orderRepository;
         }
 
         public async Task<IEnumerable<Order>> GetAllAsync()
         {
-            return await _context.Orders.ToListAsync();
+            return await _orderRepository.GetAllAsync();
         }
 
         public async Task<Order?> GetByIdAsync(int id)
         {
-            return await _context.Orders.FindAsync(id);
+            return await _orderRepository.GetByIdAsync(id);
         }
 
         public async Task<bool> UpdateAsync(int id, Order order)
         {
             if (id != order.OrderId) return false;
-
-            _context.Entry(order).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _context.Orders.AnyAsync(o => o.OrderId == id))
-                {
-                    return false;
-                }
-
-                throw;
-            }
+            return await _orderRepository.UpdateAsync(order);
         }
 
-        public async Task<Order> AddAsync(Order order)
+        public async Task<Order> CreateAsync(Order order)
         {
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
-            return order;
+            return await _orderRepository.CreateAsync(order);
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null)
-            {
-                return false;
-            }
-
-            _context.Orders.Remove(order);
-            await _context.SaveChangesAsync();
-            return true;
+            return await _orderRepository.DeleteAsync(id);
         }
     }
 }

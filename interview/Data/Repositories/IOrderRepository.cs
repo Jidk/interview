@@ -1,13 +1,13 @@
 ﻿using interview.Models;
 
-namespace interview.Services.Interfaces
+namespace interview.Data.Repositories
 {
-    public interface IOrderApiService
+    public interface IOrderRepository
     {
         Task<IEnumerable<Order>> GetAllAsync();
         Task<Order?> GetByIdAsync(int id);
-        Task<bool> UpdateAsync(int id, Order order);
         Task<Order> CreateAsync(Order order);
+        Task<bool> UpdateAsync(Order order);
         Task<bool> DeleteAsync(int id);
     }
 }
