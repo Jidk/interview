@@ -1,5 +1,6 @@
 using interview.Data;
 using interview.Data.Repositories;
+using interview.Filters;
 using interview.Services.Implementations;
 using interview.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,11 @@ builder.Services.AddDbContext<NorthwindContext>((serviceProvider, options) =>
             maxRetryDelay: TimeSpan.FromSeconds(30), //重連最大時間
             errorNumbersToAdd: null); //錯誤處理編號
     });
+});
+
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add<ErrorFilter>(); // 全域註冊
 });
 
 builder.Services.AddScoped<IOrderApiService, OrderApiService>();
