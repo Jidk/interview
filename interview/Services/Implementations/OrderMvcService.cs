@@ -34,20 +34,20 @@ namespace interview.Services.Implementations
             if (order == null) return null;
 
             var vm = ToViewModel(order);
-            vm.Customers = new SelectList(_context.Customers, "CustomerId", "客戶代號", order.CustomerId);
-            vm.Employees = new SelectList(_context.Employees, "EmployeeId", "員工編號", order.EmployeeId);
-            vm.Shippers = new SelectList(_context.Shippers, "ShipperId", "出貨方式", order.ShipVia);
+            vm.Customers = new SelectList(await _context.Customers.Select(c => new { c.CustomerId }).ToListAsync(), "CustomerId", "CustomerId", order.CustomerId);
+            vm.Employees = new SelectList(await _context.Employees.Select(e => new { e.EmployeeId }).ToListAsync(), "EmployeeId", "EmployeeId", order.EmployeeId);
+            vm.Shippers = new SelectList(await _context.Shippers.Select(s => new { s.ShipperId }).ToListAsync(), "ShipperId", "ShipperId", order.ShipVia);
             return vm;
         }
 
         public async Task<OrderViewModel> BuildCreateModelAsync()
         {
-            return new OrderViewModel
-            {
-                Customers = new SelectList(_context.Customers, "CustomerId", "CustomerId"),
-                Employees = new SelectList(_context.Employees, "EmployeeId", "EmployeeId"),
-                Shippers = new SelectList(_context.Shippers, "ShipperId", "ShipperId")
-            };
+            var vm = new OrderViewModel();
+            vm.Customers = new SelectList(await _context.Customers.Select(c => new { c.CustomerId }).ToListAsync(), "CustomerId", "CustomerId");
+            vm.Employees = new SelectList(await _context.Employees.Select(e => new { e.EmployeeId }).ToListAsync(), "EmployeeId", "EmployeeId");
+            vm.Shippers = new SelectList(await _context.Shippers.Select(s => new { s.ShipperId }).ToListAsync(), "ShipperId", "ShipperId");
+
+            return vm;
         }
 
         public async Task<bool> CreateAsync(OrderViewModel vm)
