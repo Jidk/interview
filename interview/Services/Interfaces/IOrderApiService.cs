@@ -2,7 +2,7 @@
 
 namespace interview.Services.Interfaces
 {
-    public interface IOrderService
+    public interface IOrderApiService
     {
         Task<IEnumerable<Order>> GetAllAsync();
         Task<Order?> GetByIdAsync(int id);

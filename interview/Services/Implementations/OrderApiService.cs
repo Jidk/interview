@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace interview.Services.Implementations
 {
-    public class OrderService : IOrderService
+    public class OrderApiService : IOrderApiService
     {
         private readonly NorthwindContext _context;
 
-        public OrderService(NorthwindContext context)
+        public OrderApiService(NorthwindContext context)
         {
             _context = context;
         }

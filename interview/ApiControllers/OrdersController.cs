@@ -14,9 +14,9 @@ namespace interview.ApiControllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
-        private readonly IOrderService _orderService;
+        private readonly IOrderApiService _orderService;
 
-        public OrdersController(IOrderService orderService)
+        public OrdersController(IOrderApiService orderService)
         {
             _orderService = orderService;
         }
