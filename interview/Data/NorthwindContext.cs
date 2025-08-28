@@ -26,9 +26,6 @@ public partial class NorthwindContext : DbContext
 
     public virtual DbSet<Shipper> Shippers { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer();
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Customer>(entity =>
