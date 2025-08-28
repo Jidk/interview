@@ -157,7 +157,7 @@ public partial class NorthwindContext : DbContext
 
             entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.OrderId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade) // 調整為刪除Order時同步刪除OrderDetail DB需調整FK為ON DELETE CASCADE
                 .HasConstraintName("FK_Order_Details_Orders");
         });
 
