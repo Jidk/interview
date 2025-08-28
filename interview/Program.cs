@@ -23,8 +23,11 @@ builder.Services.AddDbContext<NorthwindContext>((serviceProvider, options) =>
     });
 });
 
-// µù¥UOrderService
+// µù¥UOrderApiService
 builder.Services.AddScoped<IOrderApiService, OrderApiService>();
+
+// µù¥UOrderMvcService
+builder.Services.AddScoped<IOrderMvcService, OrderMvcService>();
 
 // ¥[¤Jswagger
 builder.Services.AddEndpointsApiExplorer();
