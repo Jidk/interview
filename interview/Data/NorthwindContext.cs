@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using interview.Models;
 using Microsoft.EntityFrameworkCore;
+using interview.Models;
 
 namespace interview.Data;
 
@@ -21,6 +21,8 @@ public partial class NorthwindContext : DbContext
     public virtual DbSet<Employee> Employees { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
+
+    public virtual DbSet<OrderDetail> OrderDetails { get; set; }
 
     public virtual DbSet<Shipper> Shippers { get; set; }
 
@@ -132,6 +134,31 @@ public partial class NorthwindContext : DbContext
             entity.HasOne(d => d.ShipViaNavigation).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.ShipVia)
                 .HasConstraintName("FK_Orders_Shippers");
+        });
+
+        modelBuilder.Entity<OrderDetail>(entity =>
+        {
+            entity.HasKey(e => new { e.OrderId, e.ProductId }).HasName("PK_Order_Details");
+
+            entity.ToTable("Order Details");
+
+            entity.HasIndex(e => e.OrderId, "OrderID");
+
+            entity.HasIndex(e => e.OrderId, "OrdersOrder_Details");
+
+            entity.HasIndex(e => e.ProductId, "ProductID");
+
+            entity.HasIndex(e => e.ProductId, "ProductsOrder_Details");
+
+            entity.Property(e => e.OrderId).HasColumnName("OrderID");
+            entity.Property(e => e.ProductId).HasColumnName("ProductID");
+            entity.Property(e => e.Quantity).HasDefaultValue((short)1);
+            entity.Property(e => e.UnitPrice).HasColumnType("money");
+
+            entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
+                .HasForeignKey(d => d.OrderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Order_Details_Orders");
         });
 
         modelBuilder.Entity<Shipper>(entity =>
